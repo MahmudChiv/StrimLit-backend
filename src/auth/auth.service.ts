@@ -35,6 +35,7 @@ export async function findOrCreateGoogleUser(dto: CreateGoogleUserDto) {
 export const getGoogleCallback = async (req: Request, res: Response) => {
   console.log("Code reached here")
   const user = req.user as any;
+  console.log(`User from getGoogleCallback: ${JSON.stringify(user)}`);
   const token = generateToken(user.id, user.email);
   res.cookie("access_token", token, {
     httpOnly: true,

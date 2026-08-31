@@ -18,6 +18,7 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", { session: false, failureRedirect: "/fail" }),
+  protect,
   getGoogleCallback,
 );
 router.get("/fail", fail);
