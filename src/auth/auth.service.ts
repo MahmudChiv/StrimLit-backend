@@ -50,16 +50,20 @@ export const fail = (req: Request, res: Response) => {
 };
 
 export const getMe = async (req: Request, res: Response) => {
-  const token = req.cookies.access_token;
-  if (!token) return res.status(401).json({ message: "Not authenticated" });
+  const currentUser = JSON.stringify(req.user);
+  console.log(`User from getMe: ${currentUser}`);
+  if (!currentUser) {
+    console.log("No user found in request");
+    return res.status(401).json({ message: "Not authenticated" });
+  }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    const user = await prisma.user.findUnique({
-        where: {id: (decoded as any).sub},
-    })
+    const me = await prisma.user.findUnique({
+      where: { id: JSON.parse(currentUser).sub },
+    });
+    console.log(`Me from getMe: ${JSON.stringify(me)}`);
 
-    return res.json({ user });
+    return res.status(200).json({ me });
   } catch {
     res.status(401).json({ message: "Invalid token" });
   }

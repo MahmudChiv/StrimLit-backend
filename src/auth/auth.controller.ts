@@ -7,6 +7,7 @@ import {
   getMe,
   logout,
 } from "./auth.service.ts";
+import { protect } from "../middleware/auth.middleware.ts";
 
 const router = Router();
 
@@ -20,7 +21,7 @@ router.get(
   getGoogleCallback,
 );
 router.get("/fail", fail);
-router.get("/me", getMe);
+router.get("/me", protect, getMe);
 router.get("/logout", logout);
 
 export default router;
