@@ -51,6 +51,7 @@ export const fail = (req: Request, res: Response) => {
 };
 
 export const getMe = async (req: Request, res: Response) => {
+  console.log("Code reached here in getMe")
   const currentUser = JSON.stringify(req.user);
   console.log(`User from getMe: ${currentUser}`);
   if (!currentUser) {
