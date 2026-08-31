@@ -9,7 +9,7 @@ export const createMeeting = async (req: Request, res: Response) => {
     const meeting = await prisma.meeting.create({
       data: {
         id: meetingId,
-        hostId: req.user?.sub || "",
+        hostId: (req.user as {sub: string}).sub || "",
         createdAt: new Date(),
       },
     });
