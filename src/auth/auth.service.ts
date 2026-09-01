@@ -33,7 +33,7 @@ export async function findOrCreateGoogleUser(dto: CreateGoogleUserDto) {
 }
 
 export const getGoogleCallback = async (req: Request, res: Response) => {
-  console.log("Code reached here")
+  console.log("Code reached here");
   const user = req.user as any;
   console.log(`User from getGoogleCallback: ${JSON.stringify(user)}`);
   const token = generateToken(user.id, user.email);
@@ -52,8 +52,8 @@ export const fail = (req: Request, res: Response) => {
 };
 
 export const getMe = async (req: Request, res: Response) => {
-  console.log("Code reached here in getMe")
-  const currentUser = JSON.stringify(req.user);
+  console.log("Code reached here in getMe");
+  const currentUser = req.user;
   console.log(`User from getMe: ${currentUser}`);
   if (!currentUser) {
     console.log("No user found in request");
@@ -62,12 +62,13 @@ export const getMe = async (req: Request, res: Response) => {
 
   try {
     const me = await prisma.user.findUnique({
-      where: { id: JSON.parse(currentUser).sub },
+      where: { id: (currentUser as { id: string }).id },
     });
     console.log(`Me from getMe: ${JSON.stringify(me)}`);
 
     return res.status(200).json({ me });
-  } catch {
+  } catch (error) {
+    console.log("getMe error:", error);
     res.status(401).json({ message: "Invalid token" });
   }
 };
