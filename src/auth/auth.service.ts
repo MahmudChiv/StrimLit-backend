@@ -38,11 +38,11 @@ export const getGoogleCallback = async (req: Request, res: Response) => {
   console.log(`User from getGoogleCallback: ${JSON.stringify(user)}`);
   const token = generateToken(user.id, user.email);
   const secure = process.env.NODE_ENV === "production" ? true : false;
-  const sameSite = secure ? "none" : "lax";
+  // const sameSite = secure ? "none" : "lax";
   res.cookie("access_token", token, {
     httpOnly: true,
     secure,
-    sameSite,
+    sameSite: "lax",
     maxAge: 24 * 60 * 60 * 1000, // 1 day
   });
 
