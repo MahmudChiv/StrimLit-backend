@@ -37,16 +37,8 @@ export const getGoogleCallback = async (req: Request, res: Response) => {
   const user = req.user as any;
   console.log(`User from getGoogleCallback: ${JSON.stringify(user)}`);
   const token = generateToken(user.id, user.email);
-  const secure = process.env.NODE_ENV === "production" ? true : false;
-  // const sameSite = secure ? "none" : "lax";
-  res.cookie("access_token", token, {
-    httpOnly: true,
-    secure,
-    sameSite: "lax",
-    maxAge: 24 * 60 * 60 * 1000, // 1 day
-  });
 
-  res.redirect(`${process.env.FRONTEND_URL || "http://localhost:3000"}/app`);
+  res.redirect(`${process.env.FRONTEND_URL || "http://localhost:3000"}/app?token=${token}`);
 };
 
 export const fail = (req: Request, res: Response) => {
@@ -56,7 +48,7 @@ export const fail = (req: Request, res: Response) => {
 export const getMe = async (req: Request, res: Response) => {
   console.log("Code reached here in getMe");
   const currentUser = req.user;
-  console.log(`User from getMe: ${currentUser}`);
+  console.log(`User from getMe: ${JSON.stringify(currentUser)}`);
   if (!currentUser) {
     console.log("No user found in request");
     return res.status(401).json({ message: "Not authenticated" });
@@ -64,7 +56,7 @@ export const getMe = async (req: Request, res: Response) => {
 
   try {
     const me = await prisma.user.findUnique({
-      where: { id: (currentUser as { id: string }).id },
+      where: { id: (currentUser as { sub: string }).sub },
     });
     console.log(`Me from getMe: ${JSON.stringify(me)}`);
 
